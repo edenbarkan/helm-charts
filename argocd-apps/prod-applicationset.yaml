@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: myapp-prod
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: production
+            namespace: production
+  template:
+    metadata:
+      name: "myapp-production"
+    spec:
+      project: prod
+      source:
+        repoURL: https://github.com/edenbarkan/helm-charts.git
+        targetRevision: main
+        path: charts/generic-app
+        helm:
+          valueFiles:
+            - ../../apps/myapp/base/values.yaml
+            - ../../apps/myapp/overlays/production/values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: production
+      syncPolicy:
+        # NO automated block - manual sync required for prod
+        syncOptions:
+          - CreateNamespace=true

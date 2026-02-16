@@ -1,0 +1,36 @@
+image:
+  tag: "v1.0.0"  # Semantic versioning in prod
+
+replicaCount: 3
+
+# Guaranteed QoS: requests == limits
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 15
+  targetCPUUtilizationPercentage: 70
+
+pdb:
+  minAvailable: 2
+
+ingress:
+  hosts:
+    - host: myapp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+externalSecret:
+  enabled: true
+  data:
+    - secretKey: DB_PASSWORD
+      remoteRef:
+        key: production/myapp/db-password

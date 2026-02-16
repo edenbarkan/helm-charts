@@ -1,0 +1,15 @@
+# Shared values across all environments
+image:
+  repository: "123456789012.dkr.ecr.us-east-1.amazonaws.com/myapp"
+
+service:
+  port: 80
+  targetPort: 8080
+
+healthCheck:
+  liveness:
+    path: /health
+    port: 8080
+  readiness:
+    path: /ready
+    port: 8080

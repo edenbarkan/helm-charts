@@ -1,0 +1,100 @@
+# Default values for generic-app
+replicaCount: 2
+
+image:
+  repository: ""  # REQUIRED - set per app
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: ""  # REQUIRED - set per env
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+# Security Context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# Topology Spread for HA
+topologySpread:
+  enabled: true
+  maxSkew: 1
+  topologyKey: "topology.kubernetes.io/zone"
+  whenUnsatisfiable: DoNotSchedule
+
+# Graceful Shutdown
+terminationGracePeriodSeconds: 30
+preStopSleepSeconds: 5
+
+# Health Checks
+healthCheck:
+  liveness:
+    path: /health
+    port: 8080
+    initialDelaySeconds: 15
+    periodSeconds: 10
+  readiness:
+    path: /ready
+    port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+# Horizontal Pod Autoscaler
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+# Pod Disruption Budget
+pdb:
+  enabled: true
+  minAvailable: 1
+
+# External Secrets
+externalSecret:
+  enabled: false
+  secretStoreName: "aws-secrets-manager"
+  refreshInterval: "1h"
+  data: []
+
+env: []
+envFrom: []
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
