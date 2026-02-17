@@ -1,5 +1,5 @@
 image:
-  tag: "v1.0.0"  # Semantic versioning in prod
+  tag: "35e5c52"  # Semantic versioning in prod
 
 replicaCount: 3
 
