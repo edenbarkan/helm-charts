@@ -1,6 +1,8 @@
 image:
-  tag: "develop" # Updated by CI
+  tag: "develop"  # Updated by CI
+
 replicaCount: 1
+
 resources:
   requests:
     cpu: 50m
@@ -8,22 +10,26 @@ resources:
   limits:
     cpu: 250m
     memory: 128Mi
+
 ingress:
   hosts:
     - host: myapp.dev.example.com
       paths:
         - path: /
           pathType: Prefix
+
 externalSecret:
   enabled: false
   data:
     - secretKey: DB_PASSWORD
       remoteRef:
         key: dev/myapp/db-password
+
 env:
   - name: ENVIRONMENT
     value: "dev"
   - name: VERSION
     value: "latest"
+
 topologySpread:
-  enabled: false # Single AZ OK for dev
+  enabled: false  # Single AZ OK for dev
