@@ -1,5 +1,5 @@
 image:
-  tag: "develop"  # Updated by CI
+  tag: "bdd0086"  # Updated by CI
 
 replicaCount: 1
 
