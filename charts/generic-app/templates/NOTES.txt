@@ -1,0 +1,18 @@
+{{- $fullName := include "generic-app.fullname" . -}}
+
+Application {{ $fullName }} has been deployed!
+
+{{- if .Values.ingress.enabled }}
+
+Access your application:
+{{- range .Values.ingress.hosts }}
+  http://{{ .host }}
+{{- end }}
+{{- end }}
+
+Check status:
+  kubectl get pods -l app.kubernetes.io/name={{ include "generic-app.name" . }}
+  kubectl get svc {{ $fullName }}
+
+View logs:
+  kubectl logs -l app.kubernetes.io/name={{ include "generic-app.name" . }} -f
