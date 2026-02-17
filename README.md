@@ -162,16 +162,12 @@ This repository integrates with your application CI/CD:
 
 ## 🎯 ArgoCD Deployment
 
-After your EKS clusters are deployed:
+ApplicationSets are deployed automatically by the ArgoCD Terraform module in `infra-live/modules/argocd/`. No manual `kubectl apply` is needed.
 
+To verify after deployment:
 ```bash
-# Dev cluster
-aws eks update-kubeconfig --name myapp-dev --region us-east-1
-kubectl apply -f argocd-apps/dev-applicationset.yaml
-
-# Prod cluster
-aws eks update-kubeconfig --name myapp-prod --region us-east-1
-kubectl apply -f argocd-apps/prod-applicationset.yaml
+kubectl get applicationset -n argocd
+kubectl get application -n argocd
 ```
 
 ## 📚 Key Concepts
