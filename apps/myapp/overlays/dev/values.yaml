@@ -1,5 +1,5 @@
 image:
-  tag: "5e1483d"  # Updated by CI
+  tag: "383fd51"  # Updated by CI
 
 replicaCount: 1
 
