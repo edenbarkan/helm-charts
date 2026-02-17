@@ -35,7 +35,7 @@ ingress:
           pathType: Prefix
 
 externalSecret:
-  enabled: true
+  enabled: false
   data:
     - secretKey: DB_PASSWORD
       remoteRef:
