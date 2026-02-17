@@ -143,13 +143,9 @@ helm template myapp charts/generic-app \
 
 This repository integrates with your application CI/CD:
 
-1. **Dev/Staging**: GitHub Actions updates image tags automatically
-   ```bash
-   yq e '.image.tag = "sha-abc1234"' -i apps/myapp/overlays/dev/values.yaml
-   ```
-
-2. **Production**: Manual promotion via workflow_dispatch
-   - Requires semantic versioning (v1.0.0)
+1. **Dev**: CI updates dev overlay on push to `develop`
+2. **Staging**: CI updates staging overlay on merge to `main`
+3. **Production**: Manual promotion via workflow_dispatch
    - ArgoCD shows OutOfSync (manual sync required)
 
 ## 📊 Environment Differences
