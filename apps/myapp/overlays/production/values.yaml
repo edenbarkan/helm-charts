@@ -21,6 +21,12 @@ autoscaling:
 pdb:
   minAvailable: 2
 
+env:
+  - name: ENVIRONMENT
+    value: "production"
+  - name: VERSION
+    value: "v1.0.0"
+
 ingress:
   hosts:
     - host: myapp.example.com

@@ -25,5 +25,11 @@ externalSecret:
       remoteRef:
         key: dev/myapp/db-password
 
+env:
+  - name: ENVIRONMENT
+    value: "dev"
+  - name: VERSION
+    value: "latest"
+
 topologySpread:
   enabled: false  # Single AZ OK for dev
