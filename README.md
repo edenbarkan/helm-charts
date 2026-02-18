@@ -20,10 +20,6 @@ helm-charts/
 │           ├── dev/
 │           ├── staging/
 │           └── production/
-│
-└── argocd-apps/                 # ArgoCD ApplicationSets
-    ├── dev-applicationset.yaml
-    └── prod-applicationset.yaml
 ```
 
 ## 🎯 Design Pattern: Base + Overlays
@@ -101,13 +97,8 @@ The `generic-app` chart is a reusable template that includes:
              pathType: Prefix
    ```
 
-4. **Update ApplicationSet:**
-   ```yaml
-   # Add to dev-applicationset.yaml
-   - env: dev
-     namespace: dev
-     app: newapp  # Add this
-   ```
+4. **Update ApplicationSet** (in `infra-live/modules/argocd/`):
+   Add the new app to the ApplicationSet generator list in the Terraform ArgoCD module.
 
 5. **Commit and push:**
    ```bash
@@ -154,7 +145,7 @@ This repository integrates with your application CI/CD:
 |-------------|----------|-----------|-------------|-------------|----------|
 | **Dev** | 1 | 50m/64Mi | Disabled | Automated | Spot |
 | **Staging** | 2 | 100m/128Mi | Disabled | Automated | Spot |
-| **Production** | 3 | 250m/256Mi | Enabled (3-15) | Manual | On-Demand |
+| **Production** | 3 | 250m/256Mi | Enabled (3-15) | Manual | Spot + On-Demand |
 
 ## 🎯 ArgoCD Deployment
 

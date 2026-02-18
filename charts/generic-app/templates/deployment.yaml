@@ -48,12 +48,16 @@ spec:
             port: {{ .Values.healthCheck.liveness.port }}
           initialDelaySeconds: {{ .Values.healthCheck.liveness.initialDelaySeconds }}
           periodSeconds: {{ .Values.healthCheck.liveness.periodSeconds }}
+          timeoutSeconds: {{ .Values.healthCheck.liveness.timeoutSeconds }}
+          failureThreshold: {{ .Values.healthCheck.liveness.failureThreshold }}
         readinessProbe:
           httpGet:
             path: {{ .Values.healthCheck.readiness.path }}
             port: {{ .Values.healthCheck.readiness.port }}
           initialDelaySeconds: {{ .Values.healthCheck.readiness.initialDelaySeconds }}
           periodSeconds: {{ .Values.healthCheck.readiness.periodSeconds }}
+          timeoutSeconds: {{ .Values.healthCheck.readiness.timeoutSeconds }}
+          failureThreshold: {{ .Values.healthCheck.readiness.failureThreshold }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         {{- with .Values.env }}
