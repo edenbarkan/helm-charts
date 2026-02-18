@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helm-Charts Repository - Kubernetes Manifests</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .repo-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .repo-info h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .repo-info p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        /* Directory Structure */
+        .directory-structure {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 6px solid #4caf50;
+        }
+
+        .dir-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tree {
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            font-size: 0.95em;
+            line-height: 1.8;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .tree-line {
+            color: #2c3e50;
+        }
+
+        .tree-folder {
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .tree-file {
+            color: #27ae60;
+        }
+
+        .tree-icon {
+            color: #e74c3c;
+        }
+
+        /* Base + Overlays Pattern */
+        .pattern-section {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 6px solid #ff9800;
+        }
+
+        .pattern-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .pattern-box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            min-width: 250px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .pattern-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        .pattern-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .pattern-title {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .pattern-desc {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .merge-arrow {
+            font-size: 2.5em;
+            color: #ff9800;
+        }
+
+        /* Chart Components */
+        .chart-components {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 6px solid #2196f3;
+        }
+
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .component-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .component-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .component-card h4 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .component-desc {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .component-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .component-features li {
+            padding: 5px 0;
+            color: #34495e;
+            font-size: 0.9em;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .component-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        /* Environment Configs */
+        .env-configs {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 6px solid #9c27b0;
+        }
+
+        .env-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .env-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .env-card h4 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .config-table td {
+            padding: 8px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 0.9em;
+        }
+
+        .config-table td:first-child {
+            font-weight: bold;
+            color: #7f8c8d;
+            width: 40%;
+        }
+
+        /* ArgoCD Integration */
+        .argocd-section {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 6px solid #e74c3c;
+        }
+
+        .applicationset {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .app-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .app-item {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .app-item strong {
+            display: block;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .app-item span {
+            color: #7f8c8d;
+            font-size: 0.85em;
+        }
+
+        /* Value Precedence */
+        .precedence-section {
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 6px solid #fbc02d;
+        }
+
+        .precedence-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .precedence-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-width: 200px;
+            text-align: center;
+            position: relative;
+        }
+
+        .precedence-number {
+            background: #fbc02d;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .precedence-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .precedence-path {
+            color: #7f8c8d;
+            font-size: 0.85em;
+            font-family: monospace;
+        }
+
+        .override-arrow {
+            font-size: 2em;
+            color: #fbc02d;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #263238;
+            color: #aed581;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .code-block .comment {
+            color: #78909c;
+        }
+
+        .code-block .key {
+            color: #4fc3f7;
+        }
+
+        .code-block .value {
+            color: #ffab40;
+        }
+
+        /* Workflow */
+        .workflow-section {
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 6px solid #009688;
+        }
+
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .workflow-step {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .step-number {
+            background: #009688;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h5 {
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        /* Security Features */
+        .security-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .security-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .security-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .security-card h4 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .security-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .security-card li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.9em;
+        }
+
+        .security-card li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 768px) {
+            .pattern-visual, .precedence-flow {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 helm-charts Repository</h1>
+        <p class="subtitle">Kubernetes Manifests & ArgoCD Configurations</p>
+
+        <div class="repo-info">
+            <h2>📦 Repository Purpose</h2>
+            <p>Defines WHAT and HOW applications are deployed to Kubernetes using reusable Helm charts with base + overlays pattern for environment-specific configurations</p>
+        </div>
+
+        <!-- Directory Structure -->
+        <div class="directory-structure">
+            <div class="dir-title">📁 Repository Structure</div>
+            <div class="tree">
+<pre class="tree-line">helm-charts/
+├── <span class="tree-icon">📄</span> <span class="tree-file">README.md</span>
+│
+├── <span class="tree-folder">📊 charts/</span>                          # <strong>Reusable Helm Charts</strong>
+│   └── <span class="tree-folder">generic-app/</span>                  # Generic chart for any app
+│       ├── <span class="tree-file">Chart.yaml</span>                # Chart metadata
+│       ├── <span class="tree-file">values.yaml</span>               # Default values
+│       └── <span class="tree-folder">templates/</span>                    # K8s manifests
+│           ├── <span class="tree-file">deployment.yaml</span>       # Pod deployment
+│           ├── <span class="tree-file">service.yaml</span>          # ClusterIP service
+│           ├── <span class="tree-file">ingress.yaml</span>          # HTTP routing
+│           ├── <span class="tree-file">serviceaccount.yaml</span>   # IRSA
+│           ├── <span class="tree-file">hpa.yaml</span>              # Autoscaling
+│           ├── <span class="tree-file">pdb.yaml</span>              # Disruption budget
+│           └── <span class="tree-file">externalsecret.yaml</span>   # Secrets sync
+│
+├── <span class="tree-folder">📱 apps/</span>                            # <strong>Per-Application Configs</strong>
+│   └── <span class="tree-folder">myapp/</span>
+│       ├── <span class="tree-folder">base/</span>                        # Shared across all envs
+│       │   └── <span class="tree-file">values.yaml</span>           # Common config
+│       └── <span class="tree-folder">overlays/</span>                   # Environment-specific
+│           ├── <span class="tree-folder">dev/</span>
+│           │   └── <span class="tree-file">values.yaml</span>       # Dev overrides
+│           ├── <span class="tree-folder">staging/</span>
+│           │   └── <span class="tree-file">values.yaml</span>       # Staging overrides
+│           └── <span class="tree-folder">production/</span>
+│               └── <span class="tree-file">values.yaml</span>       # Production overrides
+│
+└── <span class="tree-folder">🔄 argocd-apps/</span>                    # <strong>ArgoCD ApplicationSets</strong>
+    ├── <span class="tree-file">dev-applicationset.yaml</span>     # Dev & staging apps
+    └── <span class="tree-file">prod-applicationset.yaml</span>    # Production apps</pre>
+            </div>
+        </div>
+
+        <!-- Base + Overlays Pattern -->
+        <div class="pattern-section">
+            <div class="dir-title">🎨 Base + Overlays Pattern</div>
+            <p style="color: #2c3e50; margin-bottom: 20px;">This pattern allows you to define shared configuration once and override specific values per environment, following the DRY principle.</p>
+
+            <div class="pattern-visual">
+                <div class="pattern-box">
+                    <div class="pattern-icon">📋</div>
+                    <div class="pattern-title">Base Values</div>
+                    <div class="pattern-desc">
+                        Common configuration shared across ALL environments
+                        <div class="code-block" style="margin-top: 15px; text-align: left;">
+<span class="key">image:</span>
+  <span class="key">repository:</span> <span class="value">ecr.../myapp</span>
+<span class="key">service:</span>
+  <span class="key">port:</span> <span class="value">80</span>
+  <span class="key">targetPort:</span> <span class="value">8080</span>
+                        </div>
+                    </div>
+                </div>
+
+                <span class="merge-arrow">+</span>
+
+                <div class="pattern-box">
+                    <div class="pattern-icon">🔧</div>
+                    <div class="pattern-title">Overlay Values</div>
+                    <div class="pattern-desc">
+                        Environment-specific overrides (dev/staging/prod)
+                        <div class="code-block" style="margin-top: 15px; text-align: left;">
+<span class="key">image:</span>
+  <span class="key">tag:</span> <span class="value">sha-abc1234</span>
+<span class="key">replicaCount:</span> <span class="value">3</span>
+<span class="key">ingress:</span>
+  <span class="key">host:</span> <span class="value">myapp.prod.com</span>
+                        </div>
+                    </div>
+                </div>
+
+                <span class="merge-arrow">=</span>
+
+                <div class="pattern-box">
+                    <div class="pattern-icon">✅</div>
+                    <div class="pattern-title">Final Config</div>
+                    <div class="pattern-desc">
+                        ArgoCD merges base + overlay for deployment
+                        <div class="code-block" style="margin-top: 15px; text-align: left;">
+<span class="key">image:</span>
+  <span class="key">repository:</span> <span class="value">ecr.../myapp</span>
+  <span class="key">tag:</span> <span class="value">sha-abc1234</span>
+<span class="key">replicaCount:</span> <span class="value">3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Value Precedence -->
+        <div class="precedence-section">
+            <div class="dir-title">🔢 Value File Precedence (Override Order)</div>
+            <p style="color: #2c3e50; margin-bottom: 20px;">Later files override earlier ones. This allows progressive customization from generic defaults to specific environment configs.</p>
+
+            <div class="precedence-flow">
+                <div class="precedence-item">
+                    <div class="precedence-number">1</div>
+                    <div class="precedence-name">Chart Defaults</div>
+                    <div class="precedence-path">charts/generic-app/values.yaml</div>
+                </div>
+
+                <span class="override-arrow">→</span>
+
+                <div class="precedence-item">
+                    <div class="precedence-number">2</div>
+                    <div class="precedence-name">Base Values</div>
+                    <div class="precedence-path">apps/myapp/base/values.yaml</div>
+                </div>
+
+                <span class="override-arrow">→</span>
+
+                <div class="precedence-item">
+                    <div class="precedence-number">3</div>
+                    <div class="precedence-name">Overlay Values</div>
+                    <div class="precedence-path">apps/myapp/overlays/{env}/values.yaml</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generic Chart Components -->
+        <div class="chart-components">
+            <div class="dir-title">📦 Generic Helm Chart Components</div>
+            <p style="color: #2c3e50; margin-bottom: 20px;">The <code>generic-app</code> chart is a production-ready template that includes all necessary Kubernetes resources with security and HA best practices built-in.</p>
+
+            <div class="components-grid">
+                <div class="component-card">
+                    <h4>🚀 Deployment</h4>
+                    <div class="component-desc">Manages pod lifecycle and rolling updates</div>
+                    <ul class="component-features">
+                        <li>Rolling update strategy</li>
+                        <li>Configurable replicas</li>
+                        <li>Resource requests/limits</li>
+                        <li>Liveness & readiness probes</li>
+                        <li>Security context (non-root)</li>
+                        <li>Topology spread constraints</li>
+                    </ul>
+                </div>
+
+                <div class="component-card">
+                    <h4>🔗 Service</h4>
+                    <div class="component-desc">Internal load balancing across pods</div>
+                    <ul class="component-features">
+                        <li>Type: ClusterIP</li>
+                        <li>Port mapping (80 → 8080)</li>
+                        <li>Selector-based routing</li>
+                        <li>Service discovery via DNS</li>
+                        <li>Session affinity (optional)</li>
+                    </ul>
+                </div>
+
+                <div class="component-card">
+                    <h4>📮 Ingress</h4>
+                    <div class="component-desc">HTTP(S) routing from external traffic</div>
+                    <ul class="component-features">
+                        <li>nginx ingress class</li>
+                        <li>Host-based routing</li>
+                        <li>Path-based routing</li>
+                        <li>TLS configuration</li>
+                        <li>Annotations for customization</li>
+                    </ul>
+                </div>
+
+                <div class="component-card">
+                    <h4>👤 ServiceAccount</h4>
+                    <div class="component-desc">IRSA for AWS resource access</div>
+                    <ul class="component-features">
+                        <li>IAM role annotation</li>
+                        <li>OIDC authentication</li>
+                        <li>Least privilege access</li>
+                        <li>No long-lived credentials</li>
+                    </ul>
+                </div>
+
+                <div class="component-card">
+                    <h4>📈 HorizontalPodAutoscaler</h4>
+                    <div class="component-desc">Automatic scaling based on metrics</div>
+                    <ul class="component-features">
+                        <li>CPU-based scaling</li>
+                        <li>Memory-based scaling</li>
+                        <li>Min/max replica bounds</li>
+                        <li>Target utilization</li>
+                        <li>Optional (enable in prod)</li>
+                    </ul>
+                </div>
+
+                <div class="component-card">
+                    <h4>��️ PodDisruptionBudget</h4>
+                    <div class="component-desc">Ensures minimum availability during disruptions</div>
+                    <ul class="component-features">
+                        <li>minAvailable configuration</li>
+                        <li>Protects during node drains</li>
+                        <li>Prevents simultaneous evictions</li>
+                        <li>Ensures HA during updates</li>
+                    </ul>
+                </div>
+
+                <div class="component-card">
+                    <h4>🔐 ExternalSecret</h4>
+                    <div class="component-desc">Syncs secrets from AWS Secrets Manager</div>
+                    <ul class="component-features">
+                        <li>SecretStore reference</li>
+                        <li>Path-based secret access</li>
+                        <li>Auto-refresh (1 hour)</li>
+                        <li>Creates K8s Secret</li>
+                        <li>Mounted as env vars</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Environment Configurations -->
+        <div class="env-configs">
+            <div class="dir-title">🎯 Environment-Specific Configurations</div>
+            <div class="env-grid">
+                <div class="env-card">
+                    <h4>🔬 Dev Environment</h4>
+                    <table class="config-table">
+                        <tr>
+                            <td>Cluster</td>
+                            <td>myapp-dev</td>
+                        </tr>
+                        <tr>
+                            <td>Namespace</td>
+                            <td>dev</td>
+                        </tr>
+                        <tr>
+                            <td>Replicas</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>CPU / Memory</td>
+                            <td>50m / 64Mi</td>
+                        </tr>
+                        <tr>
+                            <td>Image Tag</td>
+                            <td>sha-abc1234 (dynamic)</td>
+                        </tr>
+                        <tr>
+                            <td>HPA</td>
+                            <td>Disabled</td>
+                        </tr>
+                        <tr>
+                            <td>ArgoCD Sync</td>
+                            <td>✅ Automatic</td>
+                        </tr>
+                        <tr>
+                            <td>Ingress Host</td>
+                            <td>myapp.dev.example.com</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="env-card">
+                    <h4>🎯 Staging Environment</h4>
+                    <table class="config-table">
+                        <tr>
+                            <td>Cluster</td>
+                            <td>myapp-dev</td>
+                        </tr>
+                        <tr>
+                            <td>Namespace</td>
+                            <td>staging</td>
+                        </tr>
+                        <tr>
+                            <td>Replicas</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>CPU / Memory</td>
+                            <td>100m / 128Mi</td>
+                        </tr>
+                        <tr>
+                            <td>Image Tag</td>
+                            <td>sha-abc1234 (promoted)</td>
+                        </tr>
+                        <tr>
+                            <td>HPA</td>
+                            <td>Disabled</td>
+                        </tr>
+                        <tr>
+                            <td>ArgoCD Sync</td>
+                            <td>✅ Automatic</td>
+                        </tr>
+                        <tr>
+                            <td>Ingress Host</td>
+                            <td>myapp.staging.example.com</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="env-card">
+                    <h4>🏭 Production Environment</h4>
+                    <table class="config-table">
+                        <tr>
+                            <td>Cluster</td>
+                            <td>myapp-prod</td>
+                        </tr>
+                        <tr>
+                            <td>Namespace</td>
+                            <td>production</td>
+                        </tr>
+                        <tr>
+                            <td>Replicas</td>
+                            <td>3 (min), 15 (max)</td>
+                        </tr>
+                        <tr>
+                            <td>CPU / Memory</td>
+                            <td>250m / 256Mi</td>
+                        </tr>
+                        <tr>
+                            <td>Image Tag</td>
+                            <td>v1.0.0 (semantic)</td>
+                        </tr>
+                        <tr>
+                            <td>HPA</td>
+                            <td>✅ Enabled (CPU 70%)</td>
+                        </tr>
+                        <tr>
+                            <td>ArgoCD Sync</td>
+                            <td>❌ Manual</td>
+                        </tr>
+                        <tr>
+                            <td>Ingress Host</td>
+                            <td>myapp.example.com</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ArgoCD Integration -->
+        <div class="argocd-section">
+            <div class="dir-title">🔄 ArgoCD ApplicationSets</div>
+            <p style="color: #2c3e50; margin-bottom: 20px;">ApplicationSets generate multiple ArgoCD Applications from a template, enabling declarative multi-environment deployments.</p>
+
+            <div class="applicationset">
+                <h4 style="color: #2c3e50; margin-bottom: 15px;">📋 Dev ApplicationSet (dev-applicationset.yaml)</h4>
+                <p style="color: #7f8c8d; margin-bottom: 15px;">Deploys to <strong>myapp-dev</strong> cluster → creates apps in <strong>dev</strong> and <strong>staging</strong> namespaces</p>
+                <div class="app-list">
+                    <div class="app-item">
+                        <strong>myapp-dev</strong>
+                        <span>Namespace: dev | Auto-sync: ON</span>
+                    </div>
+                    <div class="app-item">
+                        <strong>myapp-staging</strong>
+                        <span>Namespace: staging | Auto-sync: ON</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="applicationset" style="margin-top: 20px;">
+                <h4 style="color: #2c3e50; margin-bottom: 15px;">📋 Prod ApplicationSet (prod-applicationset.yaml)</h4>
+                <p style="color: #7f8c8d; margin-bottom: 15px;">Deploys to <strong>myapp-prod</strong> cluster → creates app in <strong>production</strong> namespace</p>
+                <div class="app-list">
+                    <div class="app-item" style="border-color: #e74c3c;">
+                        <strong>myapp-production</strong>
+                        <span>Namespace: production | Auto-sync: OFF (Manual)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CI/CD Workflow -->
+        <div class="workflow-section">
+            <div class="dir-title">🔄 CI/CD Integration Workflow</div>
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h5>Developer Commits Code</h5>
+                        <p>Push to <code>develop</code> branch in app-source repository triggers GitHub Actions CI pipeline</p>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h5>CI Builds & Pushes Image</h5>
+                        <p>GitHub Actions builds Docker image, runs security scan, pushes to ECR with tag <code>sha-abc1234</code></p>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h5>CI Updates helm-charts Repo</h5>
+                        <p>Using GH_PAT, CI updates <code>apps/myapp/overlays/dev/values.yaml</code> with new image tag and commits</p>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h5>ArgoCD Detects Git Change</h5>
+                        <p>ArgoCD polls helm-charts repo every 3 minutes, detects drift (OutOfSync state)</p>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h5>ArgoCD Syncs to Cluster</h5>
+                        <p>Auto-sync policy triggers: ArgoCD runs helm template + kubectl apply to deploy new version</p>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h5>Kubernetes Rolling Update</h5>
+                        <p>New pods are created, health checks pass, old pods are terminated (zero downtime)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Features -->
+        <div class="chart-components">
+            <div class="dir-title">🔐 Security Best Practices Built-In</div>
+            <div class="security-section">
+                <div class="security-card">
+                    <h4>🛡️ Container Security</h4>
+                    <ul>
+                        <li>Non-root user (UID 1000)</li>
+                        <li>Read-only root filesystem</li>
+                        <li>Dropped capabilities (ALL)</li>
+                        <li>No privilege escalation</li>
+                        <li>Security context enforcement</li>
+                    </ul>
+                </div>
+
+                <div class="security-card">
+                    <h4>🔐 Secrets Management</h4>
+                    <ul>
+                        <li>External Secrets Operator</li>
+                        <li>Sync from AWS Secrets Manager</li>
+                        <li>No secrets in Git</li>
+                        <li>IRSA authentication</li>
+                        <li>Path-based isolation</li>
+                    </ul>
+                </div>
+
+                <div class="security-card">
+                    <h4>🚀 High Availability</h4>
+                    <ul>
+                        <li>PodDisruptionBudget</li>
+                        <li>Topology spread constraints</li>
+                        <li>Anti-affinity rules</li>
+                        <li>Health checks (liveness/readiness)</li>
+                        <li>Graceful shutdown hooks</li>
+                    </ul>
+                </div>
+
+                <div class="security-card">
+                    <h4>📊 Resource Management</h4>
+                    <ul>
+                        <li>CPU/memory requests</li>
+                        <li>Resource limits enforced</li>
+                        <li>HPA for autoscaling</li>
+                        <li>Prevent resource exhaustion</li>
+                        <li>QoS class: Burstable</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

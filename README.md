@@ -1,3 +1,5 @@
+> **Multi-Repo DevOps Project** | [project-overview](https://github.com/edenbarkan/project-overview) | **helm-charts** (you are here) | [infra-live](https://github.com/edenbarkan/infra-live) | [app-source](https://github.com/edenbarkan/app-source)
+
 # Helm Charts Repository
 
 This repository contains Helm charts and application configurations for ArgoCD-managed deployments.
@@ -21,6 +23,12 @@ helm-charts/
 │           ├── staging/
 │           └── production/
 ```
+
+## 🎨 Interactive Diagram
+
+**[Open Interactive Diagram](docs/architecture-diagram.html)** - Visual overview of the Helm chart structure and GitOps workflow.
+
+---
 
 ## 🎯 Design Pattern: Base + Overlays
 
@@ -174,8 +182,12 @@ kubectl get application -n argocd
 
 ## 🔗 Related Repositories
 
-- **infra-live**: Terraform/Terragrunt infrastructure
-- **app-source**: Application code and CI/CD pipelines
+| Repository | Purpose | Link |
+|------------|---------|------|
+| **helm-charts** (this repo) | Generic Helm chart + environment overlays | You are here |
+| **infra-live** | Terraform/Terragrunt infrastructure | [edenbarkan/infra-live](https://github.com/edenbarkan/infra-live) |
+| **app-source** | Application code + CI/CD pipelines | [edenbarkan/app-source](https://github.com/edenbarkan/app-source) |
+| **project-overview** | Architecture overview + entry point | [edenbarkan/project-overview](https://github.com/edenbarkan/project-overview) |
 
 ## 🎓 For Your Interview
 

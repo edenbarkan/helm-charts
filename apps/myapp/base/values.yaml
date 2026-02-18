@@ -2,6 +2,8 @@
 nameOverride: "myapp"
 
 image:
+  # ECR URI includes AWS account ID. ArgoCD reads static YAML so this cannot be dynamically resolved.
+  # To use a different AWS account: update this URI and the AWS_ACCOUNT_ID GitHub Actions secret.
   repository: "471448382412.dkr.ecr.us-east-1.amazonaws.com/myapp"
 
 service:
