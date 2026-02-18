@@ -60,9 +60,15 @@ spec:
         env:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- with .Values.envFrom }}
+        {{- if or .Values.envFrom .Values.externalSecret.enabled }}
         envFrom:
+          {{- if .Values.externalSecret.enabled }}
+          - secretRef:
+              name: {{ include "generic-app.fullname" . }}-secrets
+          {{- end }}
+          {{- with .Values.envFrom }}
           {{- toYaml . | nindent 10 }}
+          {{- end }}
         {{- end }}
         lifecycle:
           preStop:

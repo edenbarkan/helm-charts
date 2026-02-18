@@ -35,8 +35,11 @@ ingress:
           pathType: Prefix
 
 externalSecret:
-  enabled: false
+  enabled: true
   data:
-    - secretKey: DB_PASSWORD
+    - secretKey: DATABASE_URL
       remoteRef:
-        key: production/myapp/db-password
+        key: production/myapp/database-url
+    - secretKey: API_SECRET_KEY
+      remoteRef:
+        key: production/myapp/api-secret-key

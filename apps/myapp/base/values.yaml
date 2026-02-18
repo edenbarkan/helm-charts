@@ -1,4 +1,6 @@
 # Shared values across all environments
+nameOverride: "myapp"
+
 image:
   repository: "471448382412.dkr.ecr.us-east-1.amazonaws.com/myapp"
 

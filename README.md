@@ -47,8 +47,8 @@ The `generic-app` chart is a reusable template that includes:
 - ✅ **Ingress** (nginx class)
 - ✅ **HorizontalPodAutoscaler** (optional)
 - ✅ **PodDisruptionBudget** for HA
-- ✅ **ExternalSecret** for AWS Secrets Manager
-- ✅ **ServiceAccount** with IRSA support
+- ✅ **ExternalSecret** for AWS Secrets Manager (auto-wired to pod envFrom)
+- ✅ **ServiceAccount**
 
 ### Key Features
 
